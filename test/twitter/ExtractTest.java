@@ -13,31 +13,74 @@ import org.junit.Test;
 
 public class ExtractTest {
 
-    /*
-     * TODO: your testing strategies for these methods should go here.
-     * See the ic03-testing exercise for examples of what a testing strategy comment looks like.
-     * Make sure you have partitions.
-     */
-    
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
     private static final Instant d2 = Instant.parse("2016-02-17T11:00:00Z");
+    private static final Instant d3 = Instant.parse("2017-02-17T10:00:00Z");
+    private static final Instant d4 = Instant.parse("2017-02-17T11:00:00Z");
     
-    private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
-    private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet1 = new Tweet(
+    		1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
+    private static final Tweet tweet2 = new Tweet(
+    		2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet3 = new Tweet(
+    		3, "DeepakChopra", "Consciousness is a superposition of possibilities", d3);
+    private static final Tweet tweet4 = new Tweet(
+    		4, "realDonaldTrump", "Despite the constant negative press covfefe", d4);
+    private static final Tweet tweet5 = new Tweet(
+    		5, "fakeRonaldDump", "Because of the infrequent positive press efefvoc", d4);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
         assert false; // make sure assertions are enabled with VM argument: -ea
     }
     
+    /*
+     * Partition 1: one tweet
+     */
+    @Test
+    public void testGetTimespanOneTweet() {
+    	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1));
+    	assertEquals("expected start", d1, timespan.getStart());
+    	assertEquals("expected end", d1, timespan.getEnd());
+    }
+    
+    /*
+     * Partition 2: two tweets with different times 
+     */
     @Test
     public void testGetTimespanTwoTweets() {
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2));
-        
         assertEquals("expected start", d1, timespan.getStart());
         assertEquals("expected end", d2, timespan.getEnd());
     }
     
+    /*
+     * Partition 3: two tweets at the same time
+     */
+    @Test
+    public void testGetTimespanOneTweet() {
+    	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet4, tweet5));
+    	assertEquals("expected start", d4, timespan.getStart());
+    	assertEquals("expected end", d4, timespan.getEnd());
+    }
+    
+    /*
+     * Partition 4: three tweets with different times
+     */
+    @Test
+    public void testGetTimespanOneTweet() {
+    	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet3, tweet5));
+    	assertEquals("expected start", d1, timespan.getStart());
+    	assertEquals("expected end", d3, timespan.getEnd());
+    }
+    
+    /*
+     * getMentionedUsers partitions:
+     * 1. tweets with no mentioned users
+     * 2. @ followed by non-username char
+     * 3. @ preceded by username char
+     * 4. two mentions of the same username with different capitalisations
+     */
     @Test
     public void testGetMentionedUsersNoMention() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
