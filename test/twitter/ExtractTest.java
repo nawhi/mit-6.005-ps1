@@ -37,7 +37,7 @@ public class ExtractTest {
     private static final Tweet tweet7 = new Tweet(
     		7, "bbitdiddle", "mention @alyssa during tweet", d1);
     private static final Tweet tweet8 = new Tweet(
-    		8, "bbitdiddle", "mention .@alyssa with non-tweet char beforehand", d1);
+    		8, "bbitdiddle", "mention !@alyssa with non-tweet char beforehand", d1);
     private static final Tweet tweet9 = new Tweet(
     		9, "bbitdiddle", "not a mention a@b not a mention", d1);
     private static final Tweet tweet10 = new Tweet(
@@ -53,6 +53,7 @@ public class ExtractTest {
     }
     
     /*
+     * getTimespan tests
      * Partition 1: one tweet
      */
     @Test
@@ -102,17 +103,9 @@ public class ExtractTest {
     	assertEquals("expected end", d4, timespan.getEnd());
     }
     
+        
     /*
-     * getMentionedUsers partitions:
-     * 1. tweets with no mentioned users
-     * 2. @ followed by non-username char
-     * 3. @ preceded by username char
-     * 4. two mentions of the same username with different capitalisations
-     * 5. >1 different usernames mentioned
-     * 6. mention as first char
-     */
-    
-    /*
+     * getMentionedUsers tests
      * Partition 1: tweets with no mentioned users
      */
     @Test
@@ -143,8 +136,8 @@ public class ExtractTest {
     @Test
     public void testGetMentionedUsersMentionAtStart() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet6));
-        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
-        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+        assertEquals(1, mentionedUsers.size());
+        assertTrue("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
     }
     
     /*
@@ -153,8 +146,8 @@ public class ExtractTest {
     @Test
     public void testGetMentionedUsersMentionInMiddle() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet7));
-        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
-        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+        assertEquals(1, mentionedUsers.size());
+        assertTrue("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
     }
     
     /*
@@ -163,8 +156,8 @@ public class ExtractTest {
     @Test
     public void testGetMentionedUsersMentionWithPrecedingChars() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet8));
-        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
-        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+        assertEquals(1, mentionedUsers.size());
+        assertTrue("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
     }
     
     /*
@@ -173,15 +166,15 @@ public class ExtractTest {
     @Test 
     public void testGetMentionedUsersDuplicateMentions() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet10));
-        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
-        assertEquals("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
+        assertEquals(1, mentionedUsers.size());
+        assertTrue("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
     }
     
     @Test
     public void testGetMentionedUsersDuplicateMentions2() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet11));
-        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
-        assertEquals("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
+        assertEquals(1, mentionedUsers.size());
+        assertTrue("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
     }
     
     /*
@@ -190,9 +183,9 @@ public class ExtractTest {
     @Test 
     public void testGetMentionedUsersMultipleMentions() {
     	Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet12));
-    	assertEquals("expected set size 5", mentionedUsers.size() == 5);
+    	assertEquals(5, mentionedUsers.size());
     	for (String s : Arrays.asList("mention1", "mention2", "mention3", "mention4", "mention5"))
-    		assertEquals("expected set to contain " + s, mentionedUsers.contains(s));
+    		assertTrue("expected set to contain " + s, mentionedUsers.contains(s));
     }
 
     /*
