@@ -80,9 +80,8 @@ public class Extract {
         	int i = 0; // iterator
         	do {
         		char c = txt.charAt(i);
-        		if (c == '@' 
-        		   && 
-        		   (i == 0 || !isIdentifier(txt.charAt(i-1)))
+        		if (c == '@' && 
+        		   (i == 0 || !isIdentifier(txt.charAt(i-1))))
         		{
     				// Start of a mention
     				StringBuilder sb = new StringBuilder(txt.length()-i);
