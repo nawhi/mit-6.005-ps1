@@ -234,9 +234,28 @@ public class FilterTest {
     }
     /*
      * Testing containing()
-     * partitions:
-     * 1)
+     * partitions (all on >1 tweet):
+     * 1) 1 word, no matches
+     * 2) many words, no matches
+     * 3) 1 word, partial match (all but 1 char)
+     * 4) 1 word, match at start of tweet
+     * 5) 1 word, match at end of tweet
+     * 6) 2 words, 2 matches in same tweet
+     * 7) 2 words, 2 matches in different tweets
+     * 8) 2 words, 1 matches, 1 doesn't
+     * 9) 2 identical words, 2 matches
+     * 10) 2 identical words, 2 matches in different case combinations
      */
+    
+    /*
+     * Partition 1: 1 word, no matches
+     */
+    @Test
+    public void testContainingOneWordNoMatches() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet1, tweet2),
+    			Arrays.asList(")
+    }
     
     @Test
     public void testContaining() {
