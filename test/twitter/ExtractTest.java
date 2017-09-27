@@ -90,7 +90,7 @@ public class ExtractTest {
     public void testGetTimespanThreeTweets() {
     	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet3, tweet5));
     	assertEquals("expected start", d1, timespan.getStart());
-    	assertEquals("expected end", d3, timespan.getEnd());
+    	assertEquals("expected end", d4, timespan.getEnd());
     }
     
     /*
