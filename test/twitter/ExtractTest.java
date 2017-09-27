@@ -58,7 +58,7 @@ public class ExtractTest {
      * Partition 3: two tweets at the same time
      */
     @Test
-    public void testGetTimespanOneTweet() {
+    public void testGetTimespanSimultaneousTweets() {
     	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet4, tweet5));
     	assertEquals("expected start", d4, timespan.getStart());
     	assertEquals("expected end", d4, timespan.getEnd());
@@ -68,10 +68,20 @@ public class ExtractTest {
      * Partition 4: three tweets with different times
      */
     @Test
-    public void testGetTimespanOneTweet() {
+    public void testGetTimespanThreeTweets() {
     	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet3, tweet5));
     	assertEquals("expected start", d1, timespan.getStart());
     	assertEquals("expected end", d3, timespan.getEnd());
+    }
+    
+    /*
+     * Partition 5: three tweets, two of which were at the same time
+     */
+    @Test 
+    public void testGetTimespanThreeTweetsIncSimultaneous() {
+    	Timespan timespan = Extract.getTimespan(Arrays.asList(tweet3, tweet4, tweet5));
+    	assertEquals("expected start", d3, timespan.getStart());
+    	assertEquals("expected end", d4, timespan.getEnd());
     }
     
     /*
@@ -80,6 +90,7 @@ public class ExtractTest {
      * 2. @ followed by non-username char
      * 3. @ preceded by username char
      * 4. two mentions of the same username with different capitalisations
+     * 5. >1 different usernames mentioned
      */
     @Test
     public void testGetMentionedUsersNoMention() {
