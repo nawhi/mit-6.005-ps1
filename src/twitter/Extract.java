@@ -78,18 +78,27 @@ public class Extract {
         {
         	String txt = t.getText();
         	int i = 0; // iterator
-        	do {
+        	while (i < txt.length())
+        	{
         		char c = txt.charAt(i);
-        		if (c == '@' && 
-        		   (i == 0 || !isIdentifier(txt.charAt(i-1))))
+        		if (c == '@' 
+        			&& 
+        		   (i == 0 || !isIdentifier(txt.charAt(i-1))) 
+        		   	&&
+        		   isIdentifier(txt.charAt(i+1)))
         		{
     				// Start of a mention
     				StringBuilder sb = new StringBuilder(txt.length()-i);
-    				while (isIdentifier(txt.charAt(++i)))
+    				while (++i < txt.length() && 
+    						isIdentifier(txt.charAt(i)))
+    				{
     					sb.append(txt.charAt(i));
+    				}
     				unames.add(sb.toString().toLowerCase());
         		}
-        	} while (++i < txt.length());
+        		else
+        			i++;
+        	}
         }
         return unames;
     }
