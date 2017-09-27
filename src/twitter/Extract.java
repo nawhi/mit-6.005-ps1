@@ -4,9 +4,10 @@
 package twitter;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.time.Instant;
 import java.util.Set;
+import java.util.HashSet;
+import java.lang.StringBuilder;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -72,7 +73,40 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        HashSet<String> unames = new HashSet<String>();
+        for (Tweet t : tweets)
+        {
+        	String txt = t.getText();
+        	int i = 0; // iterator
+        	do {
+        		char c = txt.charAt(i);
+        		if (c == '@' 
+        		   && 
+        		   (i == 0 || !isIdentifier(txt.charAt(i-1)))
+        		{
+    				// Start of a mention
+    				StringBuilder sb = new StringBuilder(txt.length()-i);
+    				while (isIdentifier(txt.charAt(++i)))
+    					sb.append(txt.charAt(i));
+    				unames.add(sb.toString().toLowerCase());
+        		}
+        	} while (++i < txt.length());
+        }
+        return unames;
+    }
+    
+    /**
+     * Determines whether a char is a valid identifier or not
+     * @param c  the character to test
+     * @return   whether or not the character is a member of the 
+     * 			 charset [a-zA-Z0-9_-]
+     */
+    private static boolean isIdentifier(char c) {
+    	return     c >= 'A' && c <='Z'
+    			|| c >= 'a' && c <= 'z'
+    			|| c >= '0' && c <= '9'
+    			|| c == '_'
+    			|| c == '-';
     }
 
 }
