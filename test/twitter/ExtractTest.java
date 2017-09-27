@@ -18,16 +18,34 @@ public class ExtractTest {
     private static final Instant d3 = Instant.parse("2017-02-17T10:00:00Z");
     private static final Instant d4 = Instant.parse("2017-02-17T11:00:00Z");
     
+    
+    // Testing getTimespan()
     private static final Tweet tweet1 = new Tweet(
     		1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(
     		2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
     private static final Tweet tweet3 = new Tweet(
-    		3, "DeepakChopra", "Consciousness is a superposition of possibilities", d3);
+    		3, "DeepakChopra", "Consciousness is a superposition of possibilities .@.!*@& ", d3);
     private static final Tweet tweet4 = new Tweet(
     		4, "realDonaldTrump", "Despite the constant negative press covfefe", d4);
     private static final Tweet tweet5 = new Tweet(
     		5, "fakeRonaldDump", "Because of the infrequent positive press efefvoc", d4);
+    
+    // Testing getMentionedUsers()
+    private static final Tweet tweet6 = new Tweet(
+    		6, "bbitdiddle", "@alyssa mention at start of tweet", d1);
+    private static final Tweet tweet7 = new Tweet(
+    		7, "bbitdiddle", "mention @alyssa during tweet", d1);
+    private static final Tweet tweet8 = new Tweet(
+    		8, "bbitdiddle", "mention .@alyssa with non-tweet char beforehand", d1);
+    private static final Tweet tweet9 = new Tweet(
+    		9, "bbitdiddle", "not a mention a@b not a mention", d1);
+    private static final Tweet tweet10 = new Tweet(
+    		10, "realDonaldTrump", "@covfefe @covfefe @covfefe @covfefe @covfefe - only 1 mention", d1);
+    private static final Tweet tweet11 = new Tweet(
+    		11, "realDonaldTrump", "@Covfefe @covFEFE @CovFeFe @covFefe @COVFEFE - only 1 mention", d1);
+    private static final Tweet tweet12 = new Tweet(
+    		12, "bbitdiddle", "@mention1 @mention2 @mention3 @mention4 @mention5", d1);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -91,12 +109,90 @@ public class ExtractTest {
      * 3. @ preceded by username char
      * 4. two mentions of the same username with different capitalisations
      * 5. >1 different usernames mentioned
+     * 6. mention as first char
+     */
+    
+    /*
+     * Partition 1: tweets with no mentioned users
      */
     @Test
     public void testGetMentionedUsersNoMention() {
-        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
-        
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(
+        		tweet1, tweet2, tweet4, tweet5));
         assertTrue("expected empty set", mentionedUsers.isEmpty());
+    }
+    
+    /*
+     * Partition 2: invalid mentions
+     */
+    @Test
+    public void testGetMentionedUsersInvalidMention() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet3));
+        assertTrue("expected empty set", mentionedUsers.isEmpty());
+    }
+    
+    @Test
+    public void testGetMentionedUsersInvalidMention2() {
+    	Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet9));
+    	assertTrue("expected empty set", mentionedUsers.isEmpty());
+    }
+    
+    /*
+     * Partition 3: tweet with mention at the start
+     */
+    @Test
+    public void testGetMentionedUsersMentionAtStart() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet6));
+        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
+        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+    }
+    
+    /*
+     * Partition 4: tweet with mention in the middle
+     */
+    @Test
+    public void testGetMentionedUsersMentionInMiddle() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet7));
+        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
+        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+    }
+    
+    /*
+     * Partition 5: tweet with non-tweet char before mention
+     */
+    @Test
+    public void testGetMentionedUsersMentionWithPrecedingChars() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet8));
+        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
+        assertEquals("expected set to contain 'alyssa'", mentionedUsers.contains("alyssa"));
+    }
+    
+    /*
+     * Partition 6: tweets with duplicate mentions of same username
+     */
+    @Test 
+    public void testGetMentionedUsersDuplicateMentions() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet10));
+        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
+        assertEquals("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
+    }
+    
+    @Test
+    public void testGetMentionedUsersDuplicateMentions2() {
+        Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet11));
+        assertEquals("expected set with 1 element", mentionedUsers.size() == 1);
+        assertEquals("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
+    }
+    
+    /*
+     * Partition 7: tweets with multiple mentions
+     */
+    @Test 
+    public void testGetMentionedUsersMultipleMentions() {
+    	Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet12));
+    	assertEquals("expected set size 5", mentionedUsers.size() == 5);
+    	for (String s : Arrays.asList("mention1", "mention2", "mention3", "mention4", "mention5"))
+    		assertEquals("expected set to contain " + s, mentionedUsers.contains(s));
     }
 
     /*
