@@ -13,10 +13,14 @@ import org.junit.Test;
 
 public class FilterTest {
 	
+	private static final Instant d0 = Instant.parse("2016-01-17T10:00:00Z");
 	private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
     private static final Instant d2 = Instant.parse("2016-02-17T11:00:00Z");
+    private static final Instant d2a = Instant.parse("2016-02-17T12:00:00Z");
     private static final Instant d3 = Instant.parse("2017-02-17T10:00:00Z");
+    private static final Instant d3a = Instant.parse("2017-02-17T10:30:00Z");
     private static final Instant d4 = Instant.parse("2017-02-17T11:00:00Z");
+    private static final Instant d5 = Instant.parse("2017-02-17T15:00:00Z");
     
     private static final Tweet tweet1 = new Tweet(
     		1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
@@ -113,10 +117,121 @@ public class FilterTest {
     
     /*
      * Testing inTimespan()
-     * partitions:
-     * 1)
+     * Partition 1: 1 tweet, no results
      */
+    @Test 
+    public void testInTimespanOneTweetNoResult() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet1),
+    			new Timespan(d2, d3)
+		);
+    	assertTrue("expected empty list", inTimespan.isEmpty());
+    }
     
+    /*
+     * Partition 2: 1 tweet, 1 result
+     */
+    @Test
+    public void testInTimespanOneTweetOneResult() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet2),
+    			new Timespan(d1, d2a)
+		);
+    	assertEquals("expected singleton list", 1, inTimespan.size());
+    	assertEquals("expected list to contain 1 tweet", tweet2, inTimespan.get(0));
+    }
+    
+    /*
+     * Partition 3: Many tweets, no results
+     */
+    @Test
+    public void testInTimespanManyTweetsNoResult() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet3, tweet4, tweet5, tweet6),
+    			new Timespan(d1, d2)
+		);
+    	assertTrue("expected empty list", inTimespan.isEmpty());
+    }
+    
+    /*
+     * Partition 4: Many tweets, some results
+     */
+    @Test
+    public void testInTimespanManyTweetsSomeResults() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet3, tweet2, tweet4, tweet5, tweet6),
+    			new Timespan(d1, d3a)
+		);
+    	assertEquals("expected list of size 2", 2, inTimespan.size());
+    	assertTrue("expected list to contain 2 tweets", 
+    			inTimespan.contains(Arrays.asList(tweet3, tweet2)));
+    	assertEquals("expected same order", 0, inTimespan.indexOf(tweet3));
+    }
+    
+    /*
+     * Partition 5: Many tweets, all results
+     */
+    @Test 
+    public void testInTimsepanManyTweetsAllResults() {
+    	List<Tweet> expected = Arrays.asList(
+    			tweet3, tweet2, tweet5, tweet4, tweet6, tweet1
+		); 
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			expected,     			
+    			new Timespan(d0, d5)
+		);
+    	assertEquals("expected list of size 6", 6, inTimespan.size());
+    	assertTrue(
+    			"expected list to contain 6 tweets", 
+    			inTimespan.contains(expected)
+		);
+    	for (int i=0; i<expected.size(); ++i)
+    	{
+    		assertEquals(
+    				"expected same order", 
+    				i, 
+    				inTimespan.indexOf(expected.get(i))
+			);
+    	}
+    }
+    
+    /*
+     * Partition 6: Timespan of 0 and tweet at same instant
+     */
+    @Test
+    public void testInTimespanOneTweetAtTimespanInstant() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet1),
+    			new Timespan(d1, d1)
+		);
+    	assertEquals("expected singleton list", 1, inTimespan.size());
+    	assertEquals("expected list to contain 1 tweet", tweet1, inTimespan.get(0));
+    }
+    /*
+     * Partition 7: Tweet at min boundary of timespan
+     */
+    @Test
+    public void testInTimespanOneTweetAtTimespanMin() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet1),
+    			new Timespan(d1, d2)
+		);
+    	assertEquals("expected singleton list", 1, inTimespan.size());
+    	assertEquals("expected list to contain 1 tweet", tweet1, inTimespan.get(0));
+    }
+    
+    /*
+     * Partition 8: tweet at max boundary of timespan
+     */
+    @Test
+    public void testInTimespanOneTweetAtTimespanMax() {
+    	List<Tweet> inTimespan = Filter.inTimespan(
+    			Arrays.asList(tweet2),
+    			new Timespan(d1, d2)
+		);
+    	assertEquals("expected singleton list", 1, inTimespan.size());
+    	assertEquals("expected list to contain 1 tweet", tweet2, inTimespan.get(0));
+    }
     /*
      * Testing containing()
      * partitions:
