@@ -28,6 +28,9 @@ public class FilterTest {
     		2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
     private static final Tweet tweet3 = new Tweet(
     		3, "SameUser", "Consciousness is a superposition of possibilities .@.!*@& ", d3);
+    private static final Tweet tweet3a = new Tweet(3, "SameUser", "Consciousness", d3);
+    private static final Tweet tweet3b = new Tweet(
+    		3, "SameUser", "Consciousness is a SUPERPOSITION of possibilities", d3);
     private static final Tweet tweet4 = new Tweet(
     		4, "SameUser", "Despite the constant negative press covfefe", d4);
     private static final Tweet tweet5 = new Tweet(
@@ -234,27 +237,69 @@ public class FilterTest {
     }
     /*
      * Testing containing()
-     * partitions (all on >1 tweet):
-     * 1) 1 word, no matches
-     * 2) many words, no matches
-     * 3) 1 word, partial match (all but 1 char)
-     * 4) 1 word, match at start of tweet
-     * 5) 1 word, match at end of tweet
-     * 6) 2 words, 2 matches in same tweet
-     * 7) 2 words, 2 matches in different tweets
-     * 8) 2 words, 1 matches, 1 doesn't
-     * 9) 2 identical words, 2 matches
-     * 10) 2 identical words, 2 matches in different case combinations
-     */
-    
-    /*
-     * Partition 1: 1 word, no matches
      */
     @Test
     public void testContainingOneWordNoMatches() {
     	List<Tweet> containing = Filter.containing(
     			Arrays.asList(tweet1, tweet2),
-    			Arrays.asList(")
+    			Arrays.asList("foo")
+		);
+    	assertTrue("expected empty list", containing.isEmpty());
+    }
+    
+    @Test 
+    public void testContainingManyWordsNoMatches() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet1),
+    			Arrays.asList("foo", "bar", "baz", "qux")
+		);
+    	assertTrue("expected empty list", containing.isEmpty());
+    }
+    
+    @Test 
+    public void testContaining1WordPartialMatch() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet1),
+    			Arrays.asList("rives")
+		);
+    	assertTrue("expected empty list", containing.isEmpty());
+    	
+    }
+    
+    @Test
+    public void testContaining1WordFulltextMatch() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet3a),
+    			Arrays.asList("Consciousness")
+		);
+    	assertFalse("expected non-empty list", containing.isEmpty());
+        assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet3a)));
+    	
+    }
+    
+    @Test
+    public void testContaining2Words2MatchesDifferentTweets() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet5, tweet4),
+    			Arrays.asList("positive", "negative")
+		);
+    	assertFalse("expected non-empty list", containing.isEmpty());
+        assertTrue("expected list to contain tweets", 
+        		containing.containsAll(Arrays.asList(tweet5, tweet4)));
+        assertEquals("expected same order as input tweet list", 0, containing.indexOf(tweet5));
+    	
+    }
+
+    @Test
+    public void testContaining2IdenticalWords2MatchesDiffCase() {
+    	List<Tweet> containing = Filter.containing(
+    			Arrays.asList(tweet3, tweet3b),
+    			Arrays.asList("superposition")
+		);
+    	assertFalse("expected non-empty list", containing.isEmpty());
+        assertTrue("expected list to contain tweets", 
+        		containing.containsAll(Arrays.asList(tweet3, tweet3b)));
+        assertEquals("expected same order as input tweet list", 0, containing.indexOf(tweet3));
     }
     
     @Test
