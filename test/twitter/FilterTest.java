@@ -167,7 +167,7 @@ public class FilterTest {
 		);
     	assertEquals("expected list of size 2", 2, inTimespan.size());
     	assertTrue("expected list to contain 2 tweets", 
-    			inTimespan.contains(Arrays.asList(tweet3, tweet2)));
+    			inTimespan.containsAll(Arrays.asList(tweet3, tweet2)));
     	assertEquals("expected same order", 0, inTimespan.indexOf(tweet3));
     }
     
@@ -175,7 +175,7 @@ public class FilterTest {
      * Partition 5: Many tweets, all results
      */
     @Test 
-    public void testInTimsepanManyTweetsAllResults() {
+    public void testInTimespanManyTweetsAllResults() {
     	List<Tweet> expected = Arrays.asList(
     			tweet3, tweet2, tweet5, tweet4, tweet6, tweet1
 		); 
@@ -185,8 +185,8 @@ public class FilterTest {
 		);
     	assertEquals("expected list of size 6", 6, inTimespan.size());
     	assertTrue(
-    			"expected list to contain 6 tweets", 
-    			inTimespan.contains(expected)
+    			"expected list to contain tweets", 
+    			inTimespan.containsAll(expected)
 		);
     	for (int i=0; i<expected.size(); ++i)
     	{
