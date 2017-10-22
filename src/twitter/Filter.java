@@ -4,6 +4,7 @@
 package twitter;
 
 import java.util.List;
+import java.time.Instant;
 import java.util.ArrayList;
 
 /**
@@ -48,9 +49,19 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        Instant tStart = timespan.getStart();
+        Instant tEnd = timespan.getEnd();
+        List<Tweet> results = new ArrayList<Tweet>();
+    	for (Tweet t: tweets)
+        {
+        	Instant timestamp = t.getTimestamp(); 
+    		if (!timestamp.isBefore(tStart) && !timestamp.isAfter(tEnd))
+    			results.add(t);
+        }
+    	return results;
+    	
     }
-
+    
     /**
      * Find tweets that contain certain words.
      * 
