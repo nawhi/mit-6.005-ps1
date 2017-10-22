@@ -53,7 +53,7 @@ public class FilterTest {
     			Arrays.asList(tweet1), 
     			"unknown_user"
 		);
-    	assertEquals("expected empty list", writtenBy.isEmpty());
+    	assertTrue("expected empty list", writtenBy.isEmpty());
     }
     @Test
     public void testWrittenByMultipleTweetsNoResults() {
@@ -61,7 +61,7 @@ public class FilterTest {
     			Arrays.asList(tweet1, tweet2, tweet3, tweet4, tweet5),
     			"unknown_user"
 		);
-    	assertEquals("expected empty list", writtenByMultiple.isEmpty());
+    	assertTrue("expected empty list", writtenByMultiple.isEmpty());
     }
     
     /*
