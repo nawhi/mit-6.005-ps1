@@ -250,7 +250,7 @@ public class FilterTest {
     @Test 
     public void testContainingManyWordsNoMatches() {
     	List<Tweet> containing = Filter.containing(
-    			Arrays.asList(tweet1),
+    			Arrays.asList(tweet1, tweet2),
     			Arrays.asList("foo", "bar", "baz", "qux")
 		);
     	assertTrue("expected empty list", containing.isEmpty());
@@ -281,7 +281,7 @@ public class FilterTest {
     public void testContaining2Words2MatchesDifferentTweets() {
     	List<Tweet> containing = Filter.containing(
     			Arrays.asList(tweet5, tweet4),
-    			Arrays.asList("positive", "negative")
+    			Arrays.asList("negative", "positive")
 		);
     	assertFalse("expected non-empty list", containing.isEmpty());
         assertTrue("expected list to contain tweets", 
