@@ -28,15 +28,15 @@ public class FilterTest {
     		2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
     private static final Tweet tweet3 = new Tweet(
     		3, "SameUser", "Consciousness is a superposition of possibilities .@.!*@& ", d3);
-    private static final Tweet tweet3a = new Tweet(3, "SameUser", "Consciousness", d3);
+    private static final Tweet tweet3a = new Tweet(8, "SameUser", "Consciousness", d3);
     private static final Tweet tweet3b = new Tweet(
-    		3, "SameUser", "Consciousness is a SUPERPOSITION of possibilities", d3);
+    		4, "SameUser", "Consciousness is a SUPERPOSITION of possibilities", d3);
     private static final Tweet tweet4 = new Tweet(
-    		4, "SameUser", "Despite the constant negative press covfefe", d4);
+    		5, "SameUser", "Despite the constant negative press covfefe", d4);
     private static final Tweet tweet5 = new Tweet(
-    		5, "SameUser", "Because of the infrequent positive press efefvoc", d4);
+    		6, "SameUser", "Because of the infrequent positive press efefvoc", d4);
     private static final Tweet tweet6 = new Tweet(
-    		6, "SameUser", "Another tweet to get the test suite working", d4);
+    		7, "SameUser", "Another tweet to get the test suite working", d4);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
