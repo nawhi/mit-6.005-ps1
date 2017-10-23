@@ -105,7 +105,6 @@ public class Filter {
     private static boolean findWord(String word, String text) {
     	word = word.toLowerCase();
     	text = text.toLowerCase();
-    	System.out.println(word + " contains " + text + "?");
     	// Very lazy (and SLOW) first implementation
     	return
     		// word is exactly text
