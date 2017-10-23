@@ -78,7 +78,47 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> results = new ArrayList<Tweet>();
+        for (Tweet t: tweets)
+        {
+        	String text = t.getText();
+        	for (String word: words)
+        	{
+        		if (findWord(word, text))
+        		{
+        			results.add(t);
+        			break; // only need 1 match
+        		}
+        	}
+        }
+        return results;
+    }
+    
+    /**
+     * Find a word in a longer string of text
+     * NB: case-insensitive.
+     * @param word The word to find.
+     * @param text The long text string in which to search for occurrences
+     * of the word.
+     * @return true if one or more occurrences of word was found in text.
+     */
+    private static boolean findWord(String word, String text) {
+    	word = word.toLowerCase();
+    	text = text.toLowerCase();
+    	System.out.println(word + " contains " + text + "?");
+    	// Very lazy (and SLOW) first implementation
+    	return
+    		// word is exactly text
+    		word.equals(text)
+    		||
+    		// word is at very start of text
+    		word.equals(text.substring(0, word.length()) + " ")
+    		|| 
+    		// word is at very end of text	
+    		word.equals(" " + text.substring(text.length()-word.length(), text.length()))
+    		||
+    		// word is in text separated by spaces
+    		text.contains(" " + word + " ");
     }
 
 }
