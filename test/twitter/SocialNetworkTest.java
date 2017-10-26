@@ -167,7 +167,8 @@ public class SocialNetworkTest {
         followsGraph.put("A", new HashSet<>());
         List<String> influencers = SocialNetwork.influencers(followsGraph);
         
-        assertTrue("expected empty list", influencers.isEmpty());
+        assertEquals("expected list of size 1", influencers.size(), 1);
+        assertTrue("expected A to be in list", influencers.contains("A"));
     }
     
     @Test

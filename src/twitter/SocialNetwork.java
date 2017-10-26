@@ -3,12 +3,31 @@
  */
 package twitter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+class Influencer {
+	public String name;
+	public int followers;
+	public Influencer(String name) {
+		this.name = name;
+		this.followers = 0;
+	}
+	public Influencer(String name, int followers) {
+		this.name = name;
+		this.followers = followers;
+	}
+};
+class ReverseSortByFollowers implements Comparator<Influencer> {
+	public int compare(Influencer a, Influencer b) {
+		return -1 * ((Integer)a.followers).compareTo(b.followers);
+	}
+}
 
 /**
  * SocialNetwork provides methods that operate on a social network.
@@ -59,7 +78,7 @@ public class SocialNetwork {
         }
         return results;
     }
-
+    
     /**
      * Find the people in a social network who have the greatest influence, in
      * the sense that they have the most followers.
@@ -70,7 +89,30 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        Map<String, Influencer> influencers = new HashMap<>();
+        
+        for (String followerName: followsGraph.keySet())
+        {
+        	influencers.put(followerName, new Influencer(followerName));
+        	for (String followee: followsGraph.get(followerName))
+        	{
+        		// Record that followee has a new follower
+        		if (influencers.get(followee) != null)
+        			influencers.get(followee).followers++;
+        		else
+        			influencers.put(followee, new Influencer(followee, 1));
+    		}
+        }
+        
+        List<Influencer> results = new ArrayList<Influencer>();
+        for (Influencer i : influencers.values())
+        	results.add(i);
+        
+        Collections.sort(results, new ReverseSortByFollowers());
+        List<String> ret = new ArrayList<>();
+        for (Influencer i: results)
+        	ret.add(i.name);
+        return ret;
     }
 
 }
