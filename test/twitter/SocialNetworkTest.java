@@ -77,7 +77,7 @@ public class SocialNetworkTest {
     
     @Test
     public void testGuessFollowsGraphABCfABC() {
-    	List<Tweet> tweets = Arrays.asList(AfB, BfA);
+    	List<Tweet> tweets = Arrays.asList(AfB, AfC, BfA, BfC, CfA, CfB);
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(tweets);
     	
     	Set<String> A_follows = new HashSet<>(followsGraph.get("A"));
@@ -93,7 +93,7 @@ public class SocialNetworkTest {
     
     @Test
     public void testGuessFollowsGraphAfB() {
-    	List<Tweet> tweets = Arrays.asList(AfB, BfA);
+    	List<Tweet> tweets = Arrays.asList(AfB);
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(tweets);
     	
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
@@ -110,7 +110,7 @@ public class SocialNetworkTest {
     
     @Test 
     public void testGuessFollowsGraphAfBfCfA() {
-    	List<Tweet> tweets = Arrays.asList(AfB, BfA);
+    	List<Tweet> tweets = Arrays.asList(AfB, BfC, CfA);
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(tweets);
     	
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
@@ -127,7 +127,7 @@ public class SocialNetworkTest {
     
     @Test 
     public void testGuessFollowsGraphAfB_AfC() {
-    	List<Tweet> tweets = Arrays.asList(AfB, BfA);
+    	List<Tweet> tweets = Arrays.asList(AfB, AfC);
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(tweets);
     	
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
@@ -145,7 +145,7 @@ public class SocialNetworkTest {
     
     @Test 
     public void testGuessFollowsGraphBfA_CfA() {
-    	List<Tweet> tweets = Arrays.asList(AfB, BfA);
+    	List<Tweet> tweets = Arrays.asList(BfA, CfA);
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(tweets);
     	
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
