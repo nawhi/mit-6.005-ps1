@@ -67,12 +67,11 @@ public class SocialNetworkTest {
     	
     	Set<String> A_follows = new HashSet<String>(followsGraph.get("A"));
     	Set<String> B_follows = new HashSet<String>(followsGraph.get("B"));
-    	Set<String> C_follows = new HashSet<String>(followsGraph.get("C"));
     			
     	// Expect A={B}, B={A}
-    	assertTrue("expected A to follow B", A_follows.equals(new HashSet<>(Arrays.asList("B"))));
-    	assertTrue("expected B to follow A", B_follows.equals(new HashSet<>(Arrays.asList("A"))));
-    	assertTrue("expected C not to follow anybody", isNullOrEmpty(C_follows)); 
+    	assertTrue("expected A to follow B", setEq(A_follows, new HashSet<>(Arrays.asList("B"))));
+    	assertTrue("expected B to follow A", setEq(B_follows, new HashSet<>(Arrays.asList("A"))));
+    	assertTrue("expected C not to follow anybody", isNullOrEmpty(followsGraph.get("C"))); 
     }
     
     @Test
@@ -86,9 +85,9 @@ public class SocialNetworkTest {
     	
     	// Expect A={B,C} B={C,A} C={A,B}
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
-    	assertTrue("expected A to follow B and C", A_follows.equals(new HashSet<>(Arrays.asList("B", "C"))));
-    	assertTrue("expected B to follow A and C", B_follows.equals(new HashSet<>(Arrays.asList("A", "C"))));
-    	assertTrue("expected C to follow A and B", C_follows.equals(new HashSet<>(Arrays.asList("A", "B"))));
+    	assertTrue("expected A to follow B and C", setEq(A_follows, new HashSet<>(Arrays.asList("B", "C"))));
+    	assertTrue("expected B to follow A and C", setEq(B_follows, new HashSet<>(Arrays.asList("A", "C"))));
+    	assertTrue("expected C to follow A and B", setEq(C_follows, new HashSet<>(Arrays.asList("A", "B"))));
     }
     
     @Test
@@ -100,12 +99,10 @@ public class SocialNetworkTest {
     	
     	// Expect A={B} only
     	Set<String> A_follows = new HashSet<>(followsGraph.get("A"));
-    	Set<String> B_follows = new HashSet<>(followsGraph.get("B"));
-    	Set<String> C_follows = new HashSet<>(followsGraph.get("C"));
     	
-    	assertTrue("expected A to follow B", A_follows.equals(new HashSet<>(Arrays.asList("B"))));
-    	assertTrue("expected B to follow A", B_follows.equals(new HashSet<>(Arrays.asList("A"))));
-    	assertTrue("expected C not to follow anybody", isNullOrEmpty(C_follows));
+    	assertTrue("expected A to follow B", setEq(A_follows, new HashSet<>(Arrays.asList("B"))));
+    	assertTrue("expected B not to follow anybody", isNullOrEmpty(followsGraph.get("B")));
+    	assertTrue("expected C not to follow anybody", isNullOrEmpty(followsGraph.get("C")));
     }
     
     @Test 
@@ -120,9 +117,9 @@ public class SocialNetworkTest {
     	Set<String> C_follows = new HashSet<>(followsGraph.get("C"));
     	
     	// Expect A={B} B={C} C={A}
-    	assertTrue("expected A to follow B", A_follows.equals(new HashSet<>(Arrays.asList("B"))));
-    	assertTrue("expected B to follow C", B_follows.equals(new HashSet<>(Arrays.asList("C"))));
-    	assertTrue("expected C to follow A", C_follows.equals(new HashSet<>(Arrays.asList("A"))));
+    	assertTrue("expected A to follow B", setEq(A_follows, new HashSet<>(Arrays.asList("B"))));
+    	assertTrue("expected B to follow C", setEq(B_follows, new HashSet<>(Arrays.asList("C"))));
+    	assertTrue("expected C to follow A", setEq(C_follows, new HashSet<>(Arrays.asList("A"))));
     }
     
     @Test 
@@ -134,13 +131,9 @@ public class SocialNetworkTest {
     	
     	// A={B,C}
     	Set<String> A_follows = new HashSet<>(followsGraph.get("A"));
-    	assertTrue("expected A to follow B and C", A_follows.equals(new HashSet<>(Arrays.asList("B", "C"))));
-    	
-    	Set<String> B_follows = new HashSet<>(followsGraph.get("B"));
-    	assertTrue("expected B not to follow anybody", isNullOrEmpty(B_follows));
-    	
-    	Set<String> C_follows = new HashSet<>(followsGraph.get("C"));
-    	assertTrue("expected C not to follow anybody", isNullOrEmpty(C_follows));
+    	assertTrue("expected A to follow B and C", setEq(A_follows, new HashSet<>(Arrays.asList("B", "C"))));
+    	assertTrue("expected B not to follow anybody", isNullOrEmpty(followsGraph.get("B")));
+    	assertTrue("expected C not to follow anybody", isNullOrEmpty(followsGraph.get("C")));
     }
     
     @Test 
@@ -150,14 +143,13 @@ public class SocialNetworkTest {
     	
     	assertFalse("expected non-empty graph", followsGraph.isEmpty());
     	
-    	Set<String> A_follows = new HashSet<>(followsGraph.get("A"));
     	Set<String> B_follows = new HashSet<>(followsGraph.get("B"));
     	Set<String> C_follows = new HashSet<>(followsGraph.get("C"));
     	
     	// Expect B={A}, C={A}
-    	assertTrue("expected A not to follow anybody", isNullOrEmpty(A_follows));
-    	assertTrue("expected B to follow A", B_follows.equals(new HashSet<>(Arrays.asList("A"))));
-    	assertTrue("expected C to follow A", C_follows.equals(new HashSet<>(Arrays.asList("A"))));
+    	assertTrue("expected A not to follow anybody", isNullOrEmpty(followsGraph.get("A")));
+    	assertTrue("expected B to follow A", setEq(B_follows, new HashSet<>(Arrays.asList("A"))));
+    	assertTrue("expected C to follow A", setEq(C_follows, new HashSet<>(Arrays.asList("A"))));
     }
     
     
@@ -188,7 +180,22 @@ public class SocialNetworkTest {
      * @param items A set of any type
      */
     private <T> boolean isNullOrEmpty(Set<T> items) {
-    	return items.equals(null) || items.size() == 0;
+    	return items == null || items.size() == 0;
+    }
+    
+    private <T> boolean setEq(final Set<T> setA, final Set<T> setB) {
+    	// Use copies 
+    	Set<T> a = new HashSet<T>(setA);
+    	Set<T> b = new HashSet<T>(setB);
+    	for(T t: a)
+    	{
+    		if (!b.contains(t))
+    			return false;
+    		b.remove(t);
+    	}
+    	// Popped everything from B as we found it, so
+    	// if the sets were equal it should now be empty
+    	return b.isEmpty();
     }
 
 }
