@@ -49,9 +49,13 @@ public class SocialNetwork {
         {
         	String author = t.getAuthor();
         	Set<String> mentionedUsers = Extract.getMentionedUsers(t);
-        	// putIfAbsent returns non-null on failure
-        	if (results.putIfAbsent(author, mentionedUsers) != null)
-        		results.get(author).addAll(mentionedUsers);
+        	if (mentionedUsers.isEmpty())
+        		continue;
+        	Set<String> currentFollows = results.get(author);
+        	if (currentFollows == null)
+        		results.put(author, mentionedUsers);
+        	else
+        		currentFollows.addAll(mentionedUsers);
         }
         return results;
     }
