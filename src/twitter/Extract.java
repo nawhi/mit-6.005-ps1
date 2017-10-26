@@ -74,7 +74,12 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        HashSet<String> unames = new HashSet<String>();
+        // Lower-case record, avoids duplication by case difference
+    	HashSet<String> unames = new HashSet<String>();
+    	
+    	// the set to return, with names in original case
+        HashSet<String> results = new HashSet<String>();
+        
         for (Tweet t : tweets)
         {
         	String txt = t.getText();
@@ -95,13 +100,19 @@ public class Extract {
     				{
     					sb.append(txt.charAt(i));
     				}
-    				unames.add(sb.toString().toLowerCase());
+    				String result = sb.toString(); // Original case
+    				String uname = result.toLowerCase();
+    				if (!unames.contains(uname))
+    				{
+    					unames.add(uname); // don't go over it twice
+    					results.add(result);
+    				}
         		}
         		else
         			i++;
         	}
         }
-        return unames;
+        return results;
     }
     
     /**

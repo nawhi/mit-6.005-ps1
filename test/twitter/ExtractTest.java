@@ -174,7 +174,16 @@ public class ExtractTest {
     public void testGetMentionedUsersDuplicateMentions2() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet11));
         assertEquals(1, mentionedUsers.size());
-        assertTrue("expected set to contain 'covfefe'", mentionedUsers.contains("covfefe"));
+        
+        // covfefe could be in any of the tweet's case combinations 
+        boolean containsCovfefe = false;
+        for (String user: mentionedUsers)
+        {
+        	containsCovfefe = user.toLowerCase().equals("covfefe");
+        	if (containsCovfefe)
+        		break;
+        }
+        assertTrue("expected set to contain 'covfefe'", containsCovfefe);
     }
     
     /*
