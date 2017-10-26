@@ -160,6 +160,82 @@ public class SocialNetworkTest {
         
         assertTrue("expected empty list", influencers.isEmpty());
     }
+    
+    @Test
+    public void testInfluencersEmptySet() {
+        Map<String, Set<String>> followsGraph = new HashMap<>();
+        followsGraph.put("A", new HashSet<>());
+        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        
+        assertTrue("expected empty list", influencers.isEmpty());
+    }
+    
+    @Test
+    public void testInfluencersAfB() {
+        Map<String, Set<String>> followsGraph = new HashMap<>();
+        followsGraph.put("A", new HashSet<>(Arrays.asList("B")));
+        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        
+        // Expect [A, B] or [B, A]
+        assertEquals("expected list of size 2", influencers.size(), 2);
+        assertTrue("expected A to be in list", influencers.contains("A"));
+        assertTrue("expected B to be in list", influencers.contains("B"));
+    }
+    
+    @Test
+    public void testInfluencersAfBfA() {
+    	Map<String, Set<String>> followsGraph = new HashMap<>();
+        followsGraph.put("A", new HashSet<>(Arrays.asList("B")));
+        followsGraph.put("B", new HashSet<>(Arrays.asList("A")));
+        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        
+        assertEquals("expected list of size 2", influencers.size(), 2);
+        assertTrue("expected A to be in list", influencers.contains("A"));
+        assertTrue("expected B to be in list", influencers.contains("B"));
+    }
+    
+    @Test
+    public void testInfluencersAfBC() {
+    	Map<String, Set<String>> followsGraph = new HashMap<>();
+        followsGraph.put("A", new HashSet<>(Arrays.asList("B", "C")));
+        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        
+        // Expect [B,C,A] or [A,C,B]
+        assertEquals("expected list of size 3", influencers.size(), 3);
+        assertTrue("expected B to be in list", influencers.contains("B"));
+        assertTrue("expected C to be in list", influencers.contains("C"));
+        assertEquals("expected A to be last in list", influencers.get(2), "A");
+    }
+    
+    @Test
+    public void testInfluencersAfB_CfB() {
+    	Map<String, Set<String>> followsGraph = new HashMap<>();
+        followsGraph.put("A", new HashSet<>(Arrays.asList("B")));
+        followsGraph.put("C", new HashSet<>(Arrays.asList("B")));
+        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        
+        // Expect [B,C,A] or [A,C,B]
+        assertEquals("expected list of size 3", influencers.size(), 3);
+        assertEquals("expected B to be first in list", influencers.get(0), "B");
+        assertTrue("expected A to be in list", influencers.contains("A"));
+        assertTrue("expected C to be in list", influencers.contains("C"));
+    }
+    
+    @Test 
+    public void testInfluencersLots() {
+    	Map<String, Set<String>> followsGraph = new HashMap<>();
+    	followsGraph.put("B", new HashSet<>(Arrays.asList("A", "C", "D")));
+    	followsGraph.put("C", new HashSet<>(Arrays.asList("A")));
+    	followsGraph.put("D", new HashSet<>(Arrays.asList("A","B","C")));
+    	
+    	List<String> influencers = SocialNetwork.influencers(followsGraph);
+    	
+    	// Expect [A,C,B,D] or [A,C,D,B]
+    	assertEquals("expected list of size 4", influencers.size(), 4);
+    	assertEquals("expected A to be first in list", influencers.get(0), "A");
+    	assertTrue("expected B to be in list", influencers.contains("B"));
+    	assertTrue("expected C to be in list", influencers.contains("C"));
+    }
 
     /*
      * Warning: all the tests you write here must be runnable against any
