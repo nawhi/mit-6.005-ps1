@@ -30,7 +30,7 @@ public class Extract {
 	public static Timespan getTimespan(List<Tweet> tweets) {
         Instant min = tweets.get(0).getTimestamp();
         Instant max = tweets.get(0).getTimestamp();
-        return getTimespanRec(tweets, min, max);
+        return getTimespan(tweets, min, max);
     }
     
 	/**
@@ -46,7 +46,7 @@ public class Extract {
 	 * @return a minimum-length time interval that contains the timestamp of
 	 * 		every tweet in the list
 	 */
-    private static Timespan getTimespanRec(final List<Tweet> tweets, Instant min, Instant max) {
+    private static Timespan getTimespan(final List<Tweet> tweets, Instant min, Instant max) {
     	if (tweets.isEmpty())
     		return new Timespan(min, max);
     	Tweet t = tweets.get(0);
@@ -54,7 +54,7 @@ public class Extract {
     		min = t.getTimestamp();
     	if (max.compareTo(t.getTimestamp()) <= 0)
     		max = t.getTimestamp();
-    	return getTimespanRec(tweets.subList(1, tweets.size()), min, max);
+    	return getTimespan(tweets.subList(1, tweets.size()), min, max);
     			
     }
 
