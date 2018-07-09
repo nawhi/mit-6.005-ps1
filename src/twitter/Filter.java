@@ -4,6 +4,7 @@
 package twitter;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.time.Instant;
 import java.util.ArrayList;
 
@@ -84,7 +85,8 @@ public class Filter {
         	String text = t.getText();
         	for (String word: words)
         	{
-        		if (findWord(word, text))
+        		Pattern re = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
+        		if (re.matcher(text).find())
         		{
         			results.add(t);
         			break; // only need 1 match
@@ -93,31 +95,4 @@ public class Filter {
         }
         return results;
     }
-    
-    /**
-     * Find a word in a longer string of text
-     * NB: case-insensitive.
-     * @param word The word to find.
-     * @param text The long text string in which to search for occurrences
-     * of the word.
-     * @return true if one or more occurrences of word was found in text.
-     */
-    private static boolean findWord(String word, String text) {
-    	word = word.toLowerCase();
-    	text = text.toLowerCase();
-    	// Very lazy (and SLOW) first implementation
-    	return
-    		// word is exactly text
-    		word.equals(text)
-    		||
-    		// word is at very start of text
-    		word.equals(text.substring(0, word.length()) + " ")
-    		|| 
-    		// word is at very end of text	
-    		word.equals(" " + text.substring(text.length()-word.length(), text.length()))
-    		||
-    		// word is in text separated by spaces
-    		text.contains(" " + word + " ");
-    }
-
 }
