@@ -75,10 +75,10 @@ public class Extract {
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
         // Lower-case record, avoids duplication by case difference
-    	HashSet<String> unames = new HashSet<String>();
+    	HashSet<String> unames = new HashSet<>();
     	
     	// the set to return, with names in original case
-        HashSet<String> results = new HashSet<String>();
+        HashSet<String> results = new HashSet<>();
         
         for (Tweet t : tweets)
         {

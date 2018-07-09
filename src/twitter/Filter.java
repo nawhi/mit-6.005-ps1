@@ -29,7 +29,7 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        List<Tweet> ret = new ArrayList<Tweet>();
+        List<Tweet> ret = new ArrayList<>();
     	for (Tweet t: tweets)
         {
         	if (t.getAuthor() == username)
@@ -51,7 +51,7 @@ public class Filter {
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
         Instant tStart = timespan.getStart();
         Instant tEnd = timespan.getEnd();
-        List<Tweet> results = new ArrayList<Tweet>();
+        List<Tweet> results = new ArrayList<>();
     	for (Tweet t: tweets)
         {
         	Instant timestamp = t.getTimestamp(); 
@@ -78,7 +78,7 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        List<Tweet> results = new ArrayList<Tweet>();
+        List<Tweet> results = new ArrayList<>();
         for (Tweet t: tweets)
         {
         	String text = t.getText();

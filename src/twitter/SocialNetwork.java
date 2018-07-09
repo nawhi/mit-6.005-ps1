@@ -104,7 +104,7 @@ public class SocialNetwork {
     		}
         }
         
-        List<Influencer> results = new ArrayList<Influencer>();
+        List<Influencer> results = new ArrayList<>();
         for (Influencer i : influencers.values())
         	results.add(i);
         
